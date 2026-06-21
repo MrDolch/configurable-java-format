@@ -50,9 +50,8 @@ final class ModifierOrderer {
    * (e.g. for {@code public}), but may be multiple tokens for modifiers containing {@code -} (e.g.
    * {@code non-sealed}).
    */
-  static class ModifierTokens implements Comparable<ModifierTokens> {
-    private final ImmutableList<Token> tokens;
-    private final Modifier modifier;
+  private record ModifierTokens(ImmutableList<Token> tokens, Modifier modifier)
+      implements Comparable<ModifierTokens> {
 
     static ModifierTokens create(ImmutableList<Token> tokens) {
       return new ModifierTokens(tokens, asModifier(tokens));
@@ -62,21 +61,8 @@ final class ModifierOrderer {
       return new ModifierTokens(ImmutableList.of(), null);
     }
 
-    ModifierTokens(ImmutableList<Token> tokens, Modifier modifier) {
-      this.tokens = tokens;
-      this.modifier = modifier;
-    }
-
     boolean isEmpty() {
       return tokens.isEmpty() || modifier == null;
-    }
-
-    Modifier modifier() {
-      return modifier;
-    }
-
-    ImmutableList<Token> tokens() {
-      return tokens;
     }
 
     private Token first() {
@@ -207,41 +193,29 @@ final class ModifierOrderer {
    */
   private static @Nullable Modifier asModifier(Token token) {
     TokenKind kind = ((JavaInput.Tok) token.getTok()).kind();
-    if (kind != null) {
-      switch (kind) {
-        case PUBLIC:
-          return Modifier.PUBLIC;
-        case PROTECTED:
-          return Modifier.PROTECTED;
-        case PRIVATE:
-          return Modifier.PRIVATE;
-        case ABSTRACT:
-          return Modifier.ABSTRACT;
-        case STATIC:
-          return Modifier.STATIC;
-        case DEFAULT:
-          return Modifier.DEFAULT;
-        case FINAL:
-          return Modifier.FINAL;
-        case TRANSIENT:
-          return Modifier.TRANSIENT;
-        case VOLATILE:
-          return Modifier.VOLATILE;
-        case SYNCHRONIZED:
-          return Modifier.SYNCHRONIZED;
-        case NATIVE:
-          return Modifier.NATIVE;
-        case STRICTFP:
-          return Modifier.STRICTFP;
-        default: // fall out
-      }
+    if (kind == null) {
+      return null;
     }
-    switch (token.getTok().getText()) {
-      case "sealed":
-        return Modifier.valueOf("SEALED");
-      default:
-        return null;
-    }
+    return switch (kind) {
+      case PUBLIC -> Modifier.PUBLIC;
+      case PROTECTED -> Modifier.PROTECTED;
+      case PRIVATE -> Modifier.PRIVATE;
+      case ABSTRACT -> Modifier.ABSTRACT;
+      case STATIC -> Modifier.STATIC;
+      case DEFAULT -> Modifier.DEFAULT;
+
+      case FINAL -> Modifier.FINAL;
+      case TRANSIENT -> Modifier.TRANSIENT;
+      case VOLATILE -> Modifier.VOLATILE;
+      case SYNCHRONIZED -> Modifier.SYNCHRONIZED;
+      case NATIVE -> Modifier.NATIVE;
+      case STRICTFP -> Modifier.STRICTFP;
+      default ->
+          switch (token.getTok().getText()) {
+            case "sealed" -> Modifier.SEALED;
+            default -> null;
+          };
+    };
   }
 
   /** Applies replacements to the given string. */
@@ -260,4 +234,6 @@ final class ModifierOrderer {
     }
     return new JavaInput(sb.toString());
   }
+
+  private ModifierOrderer() {}
 }

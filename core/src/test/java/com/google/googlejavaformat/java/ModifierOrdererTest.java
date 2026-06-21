@@ -17,9 +17,7 @@
 package com.google.googlejavaformat.java;
 
 import static com.google.common.truth.Truth.assertThat;
-import static com.google.common.truth.TruthJUnit.assume;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Range;
 import java.util.Arrays;
 import org.junit.Test;
@@ -68,13 +66,13 @@ public class ModifierOrdererTest {
 
   @Test
   public void subRange() throws FormatterException {
-    String[] lines = {
-      "class Test {", //
-      "  static public int a;",
-      "  static public int b;",
-      "}",
-    };
-    String input = Joiner.on('\n').join(lines);
+    String input =
+        """
+        class Test {
+          static public int a;
+          static public int b;
+        }\
+        """;
     String substring = "static public int a";
     int start = input.indexOf(substring);
     int end = start + substring.length();
@@ -88,13 +86,13 @@ public class ModifierOrdererTest {
 
   @Test
   public void whitespace() throws FormatterException {
-    String[] lines = {
-      "class Test {", //
-      "  static",
-      "  public int a;",
-      "}",
-    };
-    String input = Joiner.on('\n').join(lines);
+    String input =
+        """
+        class Test {
+          static
+          public int a;
+        }\
+        """;
     String substring = "static public int a";
     int start = input.indexOf(substring);
     int end = start + substring.length();
@@ -107,7 +105,6 @@ public class ModifierOrdererTest {
 
   @Test
   public void sealedClass() throws FormatterException {
-    assume().that(Runtime.version().feature()).isAtLeast(16);
     assertThat(ModifierOrderer.reorderModifiers("non-sealed sealed public").getText())
         .isEqualTo("public sealed non-sealed");
   }

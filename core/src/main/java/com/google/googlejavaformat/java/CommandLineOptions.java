@@ -40,6 +40,7 @@ import java.util.Optional;
  *     normally.
  * @param setExitIfChanged Return exit code 1 if there are any formatting changes.
  * @param assumeFilename Return the name to use for diagnostics when formatting standard input.
+ * @param reorderModifiers Reorder modifiers into the JLS-recommended order.
  */
 record CommandLineOptions(
     ImmutableList<String> files,
@@ -59,7 +60,8 @@ record CommandLineOptions(
     boolean setExitIfChanged,
     Optional<String> assumeFilename,
     boolean reflowLongStrings,
-    boolean formatJavadoc) {
+    boolean formatJavadoc,
+    boolean reorderModifiers) {
 
   /** Returns true if partial formatting was selected. */
   boolean isSelection() {
@@ -72,6 +74,7 @@ record CommandLineOptions(
         .removeUnusedImports(true)
         .reflowLongStrings(true)
         .formatJavadoc(true)
+        .reorderModifiers(true)
         .aosp(false)
         .width(100)
         .version(false)
@@ -133,6 +136,8 @@ record CommandLineOptions(
     Builder reflowLongStrings(boolean reflowLongStrings);
 
     Builder formatJavadoc(boolean formatJavadoc);
+
+    Builder reorderModifiers(boolean reorderModifiers);
 
     CommandLineOptions build();
   }
