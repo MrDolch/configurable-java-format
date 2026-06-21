@@ -119,6 +119,7 @@ public final class Main {
             .style(parameters.aosp() ? Style.AOSP : Style.GOOGLE)
             .formatJavadoc(parameters.formatJavadoc())
             .maxLineWidth(parameters.width())
+            .reorderModifiers(parameters.reorderModifiers())
             .build();
 
     if (parameters.stdin()) {
@@ -240,7 +241,7 @@ public final class Main {
   }
 
   /** Parses and validates command-line flags. */
-  public static CommandLineOptions processArgs(String... args) throws UsageException {
+  static CommandLineOptions processArgs(String... args) throws UsageException {
     CommandLineOptions parameters;
     try {
       parameters = CommandLineOptionsParser.parse(Arrays.asList(args));

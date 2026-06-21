@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2026 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -12,37 +12,8 @@
  * the License.
  */
 
-package com.google.googlejavaformat.java.javadoc;
-
-/** Mutable integer for tracking the level of nesting. */
-final class NestingCounter {
-  private int value;
-
-  int value() {
-    return value;
-  }
-
-  void increment() {
-    value++;
-  }
-
-  void incrementIfPositive() {
-    if (value > 0) {
-      value++;
-    }
-  }
-
-  void decrementIfPositive() {
-    if (value > 0) {
-      value--;
-    }
-  }
-
-  boolean isPositive() {
-    return value > 0;
-  }
-
-  void reset() {
-    value = 0;
+class HelloWorld {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
   }
 }
